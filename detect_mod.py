@@ -162,7 +162,7 @@ def detect(save_img=False):
                         vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer.write(im0)
 
-    with open('out.txt', 'w') as f:
+    with open('/kaggle/working/out.txt', 'w') as f:
         f.write("".join(final_out))
 
     if save_txt or save_img:
