@@ -1,6 +1,7 @@
 
 
 import argparse
+import os.path
 import time
 from pathlib import Path
 
@@ -69,6 +70,7 @@ def detect(save_img=False):
     old_img_b = 1
 
     t0 = time.time()
+    final_out = []
     for path, img, im0s, vid_cap in dataset:
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -133,6 +135,8 @@ def detect(save_img=False):
             # Print time (inference + NMS)
             print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
 
+            final_out.append(f'{os.path.basename(save_path)} > {s}\n')
+
             # Stream results
             if view_img:
                 cv2.imshow(str(p), im0)
@@ -157,6 +161,9 @@ def detect(save_img=False):
                             save_path += '.mp4'
                         vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer.write(im0)
+
+    with open('out.txt', 'w') as f:
+        f.write("".join(final_out))
 
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
